@@ -7,6 +7,8 @@ from iteration_utilities import starfilter
 import cv2 as cv
 from pydash.functions import flow, partial
 
+from constants import Paths
+
 
 path_like = Path | str
 
@@ -46,4 +48,10 @@ def transform_to_numpy(iterable: Iterable):
 
 
 
+def get_dataloaders():
+    path_tuples = list(utils.read_img_mask_name_pairs(Paths.INPUT_IMGAGES, mask_pattern=r'_L.png$', is_sorted_pairwise=True))
+    dataset_paths = torch.utils.data.random_split(path_tuples, Parameters.dataset_persentages)
+    datasets = map(CamSeqDS, dataset_paths)
+    loaders = tuple(map(lambda ds: DataLoader(ds, batch_size=Parameters.batch_size), datasets))
+    return loaders
 
