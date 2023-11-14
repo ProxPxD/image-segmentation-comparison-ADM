@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
-from itertools import pairwise
+from itertools import pairwise, repeat
 
 
 class MultiConv(nn.Module):
