@@ -42,8 +42,8 @@ def read_img_mask_name_pairs(
     return starfilter(img_and_mask_match_cond, product(imgs, masks))
 
 
-def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray], np.ndarray]) -> Iterable[tuple[np.ndarray, np.ndarray]]:
-  return map(flow(partial(map, flow(str, cv.imread)), tuple, normalize), iterable)
+def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray], np.ndarray] = lambda *args: args) -> Iterable[tuple[np.ndarray, np.ndarray]]:
+  return starmap(normalize, map(flow(partial(map, flow(str, cv.imread)), tuple), iterable))
   # for img_path, mask_path in iterable:
   #   yield cv.imread(str(img_path)), cv.imread(str(mask_path))
 
