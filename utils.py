@@ -4,6 +4,7 @@ from itertools import product, starmap
 from typing import Callable, Iterable
 
 from iteration_utilities import starfilter
+import numpy as np
 import cv2 as cv
 from pydash.functions import flow, partial
 
@@ -41,8 +42,8 @@ def read_img_mask_name_pairs(
     return starfilter(img_and_mask_match_cond, product(imgs, masks))
 
 
-def transform_to_numpy(iterable: Iterable):
-  return map(flow(partial(map, flow(str, cv.imread)), tuple), iterable)
+def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray], np.ndarray]) -> Iterable[tuple[np.ndarray, np.ndarray]]:
+  return map(flow(partial(map, flow(str, cv.imread, normalize)), tuple), iterable)
   # for img_path, mask_path in iterable:
   #   yield cv.imread(str(img_path)), cv.imread(str(mask_path))
 
