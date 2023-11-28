@@ -9,7 +9,7 @@ import numpy as np
 import cv2 as cv
 from pydash.functions import flow, partial
 
-from constants import Paths
+from .constants import Paths
 
 
 path_like = Path | str

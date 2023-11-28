@@ -1,9 +1,8 @@
 from dataclasses import dataclass, asdict, field
-import torch
-import torchmetrics
 from typing import Callable
 
-
+import torch
+import torchmetrics
 
 
 @dataclass

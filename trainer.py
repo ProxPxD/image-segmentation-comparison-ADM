@@ -1,10 +1,11 @@
+import os
 from collections import Counter
-from typing import Optional
+from typing import Optional, Callable
+
 import torch
 import torch.nn as nn
-from typing import Callable
 from torch.utils.tensorboard import SummaryWriter
-import os
+
 
 class Trainer:
     def __init__(self,

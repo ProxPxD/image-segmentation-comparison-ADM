@@ -1,13 +1,36 @@
 import os
+import sys
+import logging
 
-from trainer import Trainer
-from unet import UNet
+
+def create_logger(logger_name):
+    # create logger
+    logger = logging.getLogger(logger_name)
+    logger.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter('%(asctime)s|%(name)s|%(levelname)s|%(message)s')
+
+    # create handler
+    streamHandler = logging.StreamHandler()
+    streamHandler.setLevel(logging.DEBUG)
+    streamHandler.setFormatter(formatter)
+
+    logger.addHandler(streamHandler)
+    return logger
+
+logger = create_logger('dupa')
+
+logger.debug(f'modules: {sys.modules.keys()}')
+logger.info(f'modules: {sys.modules.keys()}')
+
 import torch
-import utils
 
 from torch.utils.tensorboard import SummaryWriter
-from parameters import Parameters, TrainData
 
+import .utils
+from .parameters import Parameters, TrainData
+from .trainer import Trainer
+from .unet import UNet
 
 libraries = (
     'opencv-python',
