@@ -2,8 +2,8 @@ import numpy as np
 from more_itertools import unique_everseen
 from pydash.arrays import flatten
 
-import .utils
-from .constants import Paths
+import utils
+from constants import Paths
 
 
 def normalize(X, mask):
