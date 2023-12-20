@@ -94,7 +94,6 @@ class Trainer:
             self.optimizer.step()
             self.optimizer.zero_grad()
 
-
     def should_save(self):
         return self.epoch and self.epoch % self.save_every_n_epoch == 0
 

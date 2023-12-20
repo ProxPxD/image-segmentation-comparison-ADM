@@ -1,6 +1,5 @@
 import numpy as np
-from more_itertools import unique_everseen
-from pydash.arrays import flatten
+from more_itertools import unique_everseen, flatten
 
 import utils
 from constants import Paths

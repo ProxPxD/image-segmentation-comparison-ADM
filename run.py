@@ -31,8 +31,7 @@ libraries = (
     'torch',
     'pandas',
     'torchmetrics',
-    'pydash',
-    'iteration-utilities',
+    'toolz',
 )
 
 os.system(f'pip install {" ".join(libraries)}')
@@ -41,7 +40,6 @@ os.system('unzip data.zip')
 import torch
 
 from torch.utils.tensorboard import SummaryWriter
-
 import utils
 from parameters import Parameters, TrainData
 from trainer import Trainer

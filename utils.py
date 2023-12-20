@@ -7,9 +7,9 @@ import pandas as pd
 from iteration_utilities import starfilter
 import numpy as np
 import cv2 as cv
-from pydash.functions import flow, partial
 
 from constants import Paths
+from toolz import compose_left
 
 
 path_like = Path | str
@@ -43,10 +43,15 @@ def read_img_mask_name_pairs(
     return starfilter(img_and_mask_match_cond, product(imgs, masks))
 
 
-def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray], np.ndarray] = lambda *args: args) -> Iterable[tuple[np.ndarray, np.ndarray]]:
-  return starmap(normalize, map(flow(partial(map, flow(str, cv.imread)), tuple), iterable))
+def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarray], np.ndarray] = lambda *args: args) -> Iterable[tuple[np.ndarray, np.ndarray]]:
+    for img_path, mask_path in iterable:
+        load = compose_left(str, cv.imread)
+        img, mask = load(img_path), load(mask_path)
+        img, mask = normalize(img, mask)
+        yield img, mask
   # for img_path, mask_path in iterable:
   #   yield cv.imread(str(img_path)), cv.imread(str(mask_path))
+
 
 
 
