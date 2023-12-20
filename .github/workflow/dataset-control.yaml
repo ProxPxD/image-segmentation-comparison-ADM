@@ -15,13 +15,13 @@ jobs:
     # runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: pudro322/img-seg-comp
+      - uses: actions/checkout@v2
       - name: Upload datasets
-        uses: pudro322/img-seg-comp # This is the action
+        uses: pudro322/img-seg-comp@v3.1 # This is the action
         env:
           # Do not leak your credentials.
-          KAGGLE_USERNAME: ${{ secrets.KAGGLE_USERNAME }}
-          KAGGLE_KEY: ${{ secrets.KAGGLE_KEY }}
+          KAGGLE_USERNAME: ${{ secrets.PUDRO_KAGGLE_USERNAME }}
+          KAGGLE_KEY: ${{ secrets.PUDRO_KAGGLE_KEY }}
 
         with:
           id:  "pudro322/img-seg-comp"
