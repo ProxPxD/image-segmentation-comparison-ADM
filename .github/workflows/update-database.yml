@@ -17,7 +17,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Upload datasets
-        uses: pudro322/img-seg-comp@v3.1 # This is the action
+        uses: jaimevalero/push-kaggle-dataset@v3.1 # This is the action
         env:
           # Do not leak your credentials.
           KAGGLE_USERNAME: ${{ secrets.PUDRO_KAGGLE_USERNAME }}
