@@ -44,10 +44,9 @@ def get_maks_format():
 
 
 def load_labels():
-    mask_pixel, mask, pixel_type = get_maks_format()
     labels = pd.read_csv(Paths.INPUT_LABELS, sep='\t', header=None)
     labels.columns = [L.COLOR, L.CLASS_NAME]
-    labels[L.COLOR] = labels[L.COLOR].apply(lambda text: np.fromiter(map(int, text.split(' ')), dtype=pixel_type))
+    labels[L.COLOR] = labels[L.COLOR].apply(lambda text: tuple(map(int, text.split(' '))))
     return labels
 
 
@@ -57,11 +56,12 @@ def map_mask():
     for row in mask:
         print(row)
         for pixel in row:
+            pixel = tuple(pixel)
             print('pixel:  ', pixel)
             print('labels[L.COLOR]:  ', labels[L.COLOR])
-            print('labels[L.COLOR] == pixel:   ', labels[L.COLOR].map(tuple).eq(tuple(pixel)))
-            print('labels.index[labels[L.COLOR] == pixel]:    ', labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))])
-            print('labels.index[labels[L.COLOR] == pixel].iloc[0]:   ', labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))].iloc[0])
+            print('labels[L.COLOR] == pixel:   ', labels[L.COLOR].eq(pixel))
+            print('labels.index[labels[L.COLOR] == pixel]:    ', labels.index[labels[L.COLOR].eq(pixel)])
+            print('labels.index[labels[L.COLOR] == pixel].iloc[0]:   ', labels.index[labels[L.COLOR].eq(pixel)].iloc[0])
             break
         break
     return list((labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))].iloc[0] for row in mask for pixel in row))
