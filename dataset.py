@@ -1,3 +1,4 @@
+import numpy as np
 from torch.utils.data import IterableDataset, DataLoader
 
 import torch
@@ -13,9 +14,16 @@ class CamSeqDS(IterableDataset):
         self.image_transposition = (2, 0, 1)
 
     def __iter__(self):
-      numpied = utils.path_to_numpy(self.path_tuples, self.normalize)
-      transposed = map(lambda arr: tuple((a.transpose(self.image_transposition) for a in arr)), numpied)
-      yield from transposed
+        numpied = utils.path_to_numpy(self.path_tuples, self.normalize)
+        for img, mask in numpied:
+            print('img:', img)
+            print('mask:', mask)
+            print('img.T:', img.transpose(self.image_transposition))
+            print('mask.T:', mask.transpose(self.image_transposition))
+            yield img.transpose(self.image_transposition), mask.transpose(self.image_transposition)
+        return
+        transposed = map(lambda arr: tuple((a.transpose(self.image_transposition) for a in arr)), numpied)
+        yield from transposed
 
 
 def get_dataloaders(normalize=lambda args: args):
