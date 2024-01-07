@@ -59,12 +59,12 @@ def map_mask():
         for pixel in row:
             print('pixel:  ', pixel)
             print('labels[L.COLOR]:  ', labels[L.COLOR])
-            print('labels[L.COLOR] == pixel:   ', labels[L.COLOR].eq(pixel))
-            print('labels.index[labels[L.COLOR] == pixel]:    ', labels.index[labels[L.COLOR].eq(pixel)])
-            print('labels.index[labels[L.COLOR] == pixel].iloc[0]:   ', labels.index[labels[L.COLOR].eq(pixel)].iloc[0])
+            print('labels[L.COLOR] == pixel:   ', labels[L.COLOR].map(tuple).eq(tuple(pixel)))
+            print('labels.index[labels[L.COLOR] == pixel]:    ', labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))])
+            print('labels.index[labels[L.COLOR] == pixel].iloc[0]:   ', labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))].iloc[0])
             break
         break
-    return list((labels.index[labels[L.COLOR].eq(pixel)].iloc[0] for row in mask for pixel in row))
+    return list((labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))].iloc[0] for row in mask for pixel in row))
 
 
 def get_label_info():
