@@ -61,9 +61,7 @@ def get_resize(shape):
 
     def resize(img):
         img = torch.from_numpy(img)
-        img = torch.permute(img, (2, 0, 1))
         img = torch_resize(img)
-        img = torch.permute(img, (1, 2, 0))
         img = torch.Tensor.numpy(img)
         return img
     return resize
@@ -77,9 +75,11 @@ def normalize_mask(mask, label_dict, resize=lambda img: img):
     return mask
 
 
-def normalize_picture(img, resize):
+def normalize_picture(img: np.ndarray, resize=lambda img: img):
     img = img.astype(np.float32) / 255
+    img = img.transpose((2, 0, 1))
     img = resize(img)
+    img = img.transpose((1, 2, 0))
     return img
 
 
