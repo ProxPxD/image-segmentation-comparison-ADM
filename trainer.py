@@ -53,6 +53,7 @@ class Trainer:
         self.writer.add_scalar(full_label, to_write, self.counter.get(full_label))
 
     def train(self, train: torch.utils.data.DataLoader, test: torch.utils.data.DataLoader, validation: torch.utils.data.DataLoader = None, epochs: int = None, verbose: int = None):
+        print(f'Starting running on {self.device}')
         if epochs:
             self.epochs = epochs
         if verbose is not None:
