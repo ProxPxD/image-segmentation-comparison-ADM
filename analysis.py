@@ -57,7 +57,8 @@ def map_mask():
     for row in mask:
         print(row)
         for pixel in row:
-            print(pixel)
+            print('pixel:  ', pixel)
+            print('labels[L.COLOR]:  ', labels[L.COLOR])
             print('labels[L.COLOR] == pixel:   ', labels[L.COLOR] == pixel)
             print('labels.index[labels[L.COLOR] == pixel]:    ', labels.index[labels[L.COLOR] == pixel])
             print('labels.index[labels[L.COLOR] == pixel].iloc[0]:   ', labels.index[labels[L.COLOR] == pixel].iloc[0])
