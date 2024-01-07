@@ -3,6 +3,7 @@ import os
 import sys
 import logging
 
+import analysis
 
 libraries = (
     'opencv-python',
@@ -61,6 +62,9 @@ models = (
     UNet(Parameters.permutated_image_size[0], Parameters.n_classes, depth=3),
 )
 
+labels = analysis.load_labels()
+normalize = utils.get_normalize(labels)
+
 for model in models:
     optimizer = torch.optim.Adam(model.parameters(), lr=TrainData.lr, weight_decay=TrainData.weight_decay)
     train_data = TrainData(optimizer)
@@ -68,5 +72,5 @@ for model in models:
     trainer = Trainer(model, writer, verbose=3, metrics=train_data.metrics, optimizer=train_data.optimizer, loss=train_data.loss, device=Parameters.device)
     print('Data Path:', Paths.DATA.resolve())
     print('pwd:', os.system('pwd'))
-    train_loader, val_loader, test_loader = dataset.get_dataloaders(utils.normalize)
+    train_loader, val_loader, test_loader = dataset.get_dataloaders(normalize)
     trainer.train(train_loader, val_loader, test_loader)

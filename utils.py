@@ -4,6 +4,8 @@ import torch
 from itertools import product
 from pathlib import Path
 from typing import Callable, Iterable
+
+from constants import L
 from parameters import Parameters
 
 import cv2 as cv
@@ -52,10 +54,22 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
   #   yield cv.imread(str(img_path)), cv.imread(str(mask_path))
 
 
-def normalize(X, mask):
-    X = torch.from_numpy(X)
-    X = torch.permute(X, (2, 0, 1))
-    X = torchvision.transforms.Resize(Parameters.normalized_image_size[1:])(X)
-    X = torch.permute(X, (1, 2, 0))
-    X = torch.Tensor.numpy(X)
-    return X.astype(np.float32) / 255, mask
+def normalize_mask(mask, labels):
+    print('type in mask: ', type(mask[0][0]))
+    print('type in labels: ', type(labels[L.COLOR].iloc[0]))
+    mask = np.ndarray((labels.index[labels[L.COLOR] == pixel] for row in mask for pixel in row)).resize(mask.size)
+    return mask
+
+
+def normalize_picture(pic):
+    pic = torch.from_numpy(pic)
+    pic = torch.permute(pic, (2, 0, 1))
+    pic = torchvision.transforms.Resize(Parameters.normalized_image_size[1:])(pic)
+    pic = torch.permute(pic, (1, 2, 0))
+    pic = torch.Tensor.numpy(pic)
+    pic = pic.astype(np.float32) / 255
+    return pic
+
+
+def get_normalize(labels):
+    return lambda X, mask: (normalize_picture(X), normalize_mask(mask, labels))
