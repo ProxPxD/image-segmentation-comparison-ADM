@@ -54,23 +54,40 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
   #   yield cv.imread(str(img_path)), cv.imread(str(mask_path))
 
 
-def normalize_mask(mask, label_dict):
+def get_resize(shape):
+    torch_resize = torchvision.transforms.Resize(shape)
+
+    def resize(img):
+        img = torch.permute(img, (2, 0, 1))
+        img = torch_resize(img)
+        img = torch.permute(img, (1, 2, 0))
+        img = torch.Tensor.numpy(img)
+        return img
+    return resize
+
+
+def resize_img(img, resize):
+    img = torch.permute(img, (2, 0, 1))
+    img = torchvision.transforms.Resize(Parameters.normalized_image_size[1:])(img)
+    img = torch.permute(img, (1, 2, 0))
+    return img
+
+def normalize_mask(mask, label_dict, resize):
     flat_mask = mask.reshape(-1, mask.shape[-1])
     label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
     mask = label_indices.reshape(mask.shape[:-1])
+    mask = resize(mask)
     return mask
 
 
-def normalize_picture(pic):
-    pic = torch.from_numpy(pic)
-    pic = torch.permute(pic, (2, 0, 1))
-    pic = torchvision.transforms.Resize(Parameters.normalized_image_size[1:])(pic)
-    pic = torch.permute(pic, (1, 2, 0))
-    pic = torch.Tensor.numpy(pic)
-    pic = pic.astype(np.float32) / 255
-    return pic
+def normalize_picture(img, resize):
+    img = torch.from_numpy(img)
+    img = img.astype(np.float32) / 255
+    img = resize(img)
+    return img
 
 
 def get_normalize(labels):
+    resize = get_resize(Parameters.normalized_image_size[1:])
     label_dict = {tuple(row[L.COLOR]): idx for idx, row in labels.iterrows()}
-    return lambda X, mask: (normalize_picture(X), normalize_mask(mask, label_dict))
+    return lambda X, mask: (normalize_picture(X, resize=resize), normalize_mask(mask, label_dict, resize=resize))
