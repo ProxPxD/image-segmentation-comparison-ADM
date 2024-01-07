@@ -3,7 +3,7 @@ from torch.utils.data import IterableDataset, DataLoader
 import torch
 from constants import Paths
 from parameters import Parameters
-import utils
+from . import utils
 
 
 class CamSeqDS(IterableDataset):
