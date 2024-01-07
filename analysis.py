@@ -48,6 +48,7 @@ def load_labels():
     labels = pd.read_csv(Paths.INPUT_LABELS, sep='\t', header=None)
     labels.columns = [L.COLOR, L.CLASS_NAME]
     labels[L.COLOR] = labels[L.COLOR].apply(lambda text: np.fromiter(map(int, text.split(' ')), dtype=pixel_type))
+    print(list((labels.index[labels[L.COLOR] == pixel].iloc[0] for row in mask for pixel in row)))
     return labels
 
 
