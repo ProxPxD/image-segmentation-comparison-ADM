@@ -3,9 +3,22 @@ import os
 import sys
 import logging
 
-import dataset
+
+libraries = (
+    'opencv-python',
+    'torch',
+    'pandas',
+    'torchmetrics',
+    'toolz',
+    'iteration-utilities'
+)
+
+os.system(f'pip install {" ".join(libraries)}')
 
 sys.path.append('../input/img-seg-comp')
+
+import dataset
+
 
 # def create_logger(logger_name):
 #     # create logger
@@ -26,17 +39,6 @@ sys.path.append('../input/img-seg-comp')
 # 
 # logger.debug(f'modules: {sys.modules.keys()}')
 # logger.info(f'modules: {sys.modules.keys()}')
-
-
-libraries = (
-    'opencv-python',
-    'torch',
-    'pandas',
-    'torchmetrics',
-    'toolz',
-)
-
-os.system(f'pip install {" ".join(libraries)}')
 os.system('unzip data.zip')
 
 import torch
