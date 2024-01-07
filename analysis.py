@@ -48,8 +48,22 @@ def load_labels():
     labels = pd.read_csv(Paths.INPUT_LABELS, sep='\t', header=None)
     labels.columns = [L.COLOR, L.CLASS_NAME]
     labels[L.COLOR] = labels[L.COLOR].apply(lambda text: np.fromiter(map(int, text.split(' ')), dtype=pixel_type))
-    print(list((labels.index[labels[L.COLOR] == pixel].iloc[0] for row in mask for pixel in row)))
     return labels
+
+
+def map_mask():
+    mask_pixel, mask, pixel_type = get_maks_format()
+    labels = load_labels()
+    for row in mask:
+        print(row)
+        for pixel in row:
+            print(pixel)
+            print('labels[L.COLOR] == pixel:   ', labels[L.COLOR] == pixel)
+            print('labels.index[labels[L.COLOR] == pixel]:    ', labels.index[labels[L.COLOR] == pixel])
+            print('labels.index[labels[L.COLOR] == pixel].iloc[0]:   ', labels.index[labels[L.COLOR] == pixel].iloc[0])
+            break
+        break
+    return list((labels.index[labels[L.COLOR] == pixel].iloc[0] for row in mask for pixel in row))
 
 
 def get_label_info():
@@ -63,7 +77,8 @@ if __name__ == '__main__':
         'Img format': get_img_format,
         'Unique shapes': get_shape,
         'Mask format': get_maks_format,
-        'Labels': get_label_info
+        'Labels': get_label_info,
+        'Map mask to int': map_mask,
     }
 
     for a_name, a_func in analysis_funcs.items():
