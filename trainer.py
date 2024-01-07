@@ -41,6 +41,9 @@ class Trainer:
         self.counter: Counter = Counter()
         self.writer = writer
 
+        self.epoch: Optional[int] = None
+        self.iteration: Optional[int] = None
+
     def _is_in_right_iteration(self):
         return self.iteration % 1 == 0  # to implemnet if needed a variable iteration
 
