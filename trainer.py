@@ -63,9 +63,7 @@ class Trainer:
             for iteration, (X, results) in enumerate(train):
                 self.iteration = iteration
                 self._verbosely_print(2, f'Iteration {iteration+1:>3}:', self._is_in_right_iteration)
-                print(X.shape, '\n', X, end='\n' + '*'*33)
                 preds = self.model(X.to(self.device))
-                print(preds.shape, '\n', preds)
                 self._gather_metrics(results, preds)
                 self._backwards(results, preds)
                 self._optimize()
@@ -110,7 +108,7 @@ class Trainer:
         existed = os.path.exists(path)
         if existed:
             if self.verbose:
-                print(f'Loading {path}')
+                self.logger(f'Loading {path}')
             checkpoint = torch.load(path)
             self.model.load_state_dict(checkpoint)
         return existed
