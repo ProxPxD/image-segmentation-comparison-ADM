@@ -57,8 +57,8 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
 def normalize_mask(mask, label_dict):
     flat_mask = mask.reshape(-1, mask.shape[-1])
     label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
-    label_indices.resize(mask.size)
-    return label_indices
+    mask = label_indices.reshape(mask.shape[:-1])
+    return mask
 
 
 def normalize_picture(pic):

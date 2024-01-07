@@ -20,7 +20,6 @@ class CamSeqDS(IterableDataset):
             print('img:', img)
             print('mask:', mask)
             print('img.T:', img.transpose(self.image_transposition))
-            print('mask.T:', mask.transpose(self.image_transposition))
             yield img.transpose(self.image_transposition), mask
         return
         transposed = map(lambda arr: tuple((a.transpose(self.image_transposition) for a in arr)), numpied)
