@@ -60,6 +60,7 @@ def get_resize(shape):
     torch_resize = torchvision.transforms.Resize(shape)
 
     def resize(img):
+        img = torch.from_numpy(img)
         img = torch.permute(img, (2, 0, 1))
         img = torch_resize(img)
         img = torch.permute(img, (1, 2, 0))
@@ -77,9 +78,8 @@ def normalize_mask(mask, label_dict, resize=lambda img: img):
 
 
 def normalize_picture(img, resize):
-    img = torch.from_numpy(img)
-    img = resize(img)
     img = img.astype(np.float32) / 255
+    img = resize(img)
     return img
 
 
