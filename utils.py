@@ -58,19 +58,18 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
 
 def get_resize(shape):
     torch_resize = torchvision.transforms.Resize(shape)
-
-    def resize(img):
-        img = torch.from_numpy(img)
-        img = torch_resize(img)
-        img = torch.Tensor.numpy(img)
-        return img
+    resize = compose_left(
+        torch.from_numpy,
+        torch_resize,
+        torch.Tensor.numpy
+    )
     return resize
 
 
 def normalize_mask(mask, label_dict, resize=lambda img: img):
     flat_mask = mask.reshape(-1, mask.shape[-1])
     label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
-    mask = label_indices.reshape(mask.shape[:-1])
+    mask = label_indices.reshape(tuple(mask.shape[:-1]) + (1,))
     mask = resize(mask)
     return mask
 
