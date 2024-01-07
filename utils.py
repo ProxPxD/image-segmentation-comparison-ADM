@@ -1,7 +1,10 @@
 import re
+import torchvision
+import torch
 from itertools import product
 from pathlib import Path
 from typing import Callable, Iterable
+from parameters import Parameters
 
 import cv2 as cv
 import numpy as np
@@ -50,4 +53,9 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
 
 
 def normalize(X, mask):
+    X = torch.from_numpy(X)
+    X = torch.permute(X, (2, 0, 1))
+    X = torchvision.transforms.Resize(Parameters.normalized_image_size[1:])(X)
+    X = torch.permute(X, (1, 2, 0))
+    X = torch.Tensor.numpy(X)
     return X.astype(np.float32) / 255, mask

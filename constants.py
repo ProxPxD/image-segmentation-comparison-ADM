@@ -4,7 +4,7 @@ from pathlib import Path
 
 @dataclass
 class Paths:
-    DATA = Path('./data/data')
+    DATA = Path('../input/img-seg-comp/data/data')
     INPUT_DATA = DATA / 'input'
     INPUT_IMGAGES = INPUT_DATA / 'img'
     INPUT_LABELS = INPUT_DATA / 'label_colors.txt'

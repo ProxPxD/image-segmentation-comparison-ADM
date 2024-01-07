@@ -48,6 +48,7 @@ import utils
 from parameters import Parameters, TrainData
 from trainer import Trainer
 from unet import UNet
+from constants import Paths
 
 run_analysis = True
 
@@ -57,12 +58,14 @@ if run_analysis:
 writer = SummaryWriter(TrainData.log_dir)
 
 models = (
-    UNet(Parameters.permutated_image_size[0], Parameters.n_classes),
+    UNet(Parameters.permutated_image_size[0], Parameters.n_classes, depth=3),
 )
 
 for model in models:
     TrainData.optimizer = torch.optim.Adam(model.parameters(), lr=TrainData.lr, weight_decay=TrainData.weight_decay)
     model.to(Parameters.device)
     trainer = Trainer(model, writer, verbose=2, metrics=TrainData.metrics, optimizer=TrainData.optimizer, loss=TrainData.loss, device=Parameters.device)
+    print(Paths.DATA.resolve())
+    print(os.system('pwd'))
     train_loader, val_loader, test_loader = dataset.get_dataloaders(utils.normalize)
     trainer.train(train_loader, val_loader, test_loader)

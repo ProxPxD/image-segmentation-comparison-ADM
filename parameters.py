@@ -18,6 +18,8 @@ class Parameters:
     image_original_size = (720, 960, 3)
     permutated_image_size = (3, 720, 960)
 
+    normalized_image_size = (3, 360, 480)
+
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     dataset_persentages = tuple(asdict(DatasetPercentages()).values())
