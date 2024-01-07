@@ -47,7 +47,8 @@ class TrainData:
         # 'Cross-Entropy': None
     })
 
+
 if sum(Parameters.dataset_persentages) != 1.0:
-  raise ValueError
+    raise ValueError
 
 

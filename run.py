@@ -3,6 +3,8 @@ import os
 import sys
 import logging
 
+import dataset
+
 sys.path.append('../input/img-seg-comp')
 
 # def create_logger(logger_name):
@@ -60,5 +62,5 @@ for model in models:
     TrainData.optimizer = torch.optim.Adam(model.parameters(), lr=Parameters.lr, weight_decay=Parameters.weight_decay)
     model.to(Parameters.device)
     trainer = Trainer(model, writer, )
-    train_loader, val_loader, test_loader = utils.get_dataloaders(utils.normalize)
+    train_loader, val_loader, test_loader = dataset.get_dataloaders(utils.normalize)
     trainer.train(train_loader, val_loader, test_loader)
