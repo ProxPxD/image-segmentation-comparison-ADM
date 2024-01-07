@@ -13,6 +13,8 @@ import numpy as np
 from iteration_utilities import starfilter
 from toolz import compose_left
 
+import operator as op
+
 path_like = Path | str
 
 
@@ -66,13 +68,7 @@ def get_resize(shape):
     return resize
 
 
-def resize_img(img, resize):
-    img = torch.permute(img, (2, 0, 1))
-    img = torchvision.transforms.Resize(Parameters.normalized_image_size[1:])(img)
-    img = torch.permute(img, (1, 2, 0))
-    return img
-
-def normalize_mask(mask, label_dict, resize):
+def normalize_mask(mask, label_dict, resize=lambda img: img):
     flat_mask = mask.reshape(-1, mask.shape[-1])
     label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
     mask = label_indices.reshape(mask.shape[:-1])
@@ -82,8 +78,8 @@ def normalize_mask(mask, label_dict, resize):
 
 def normalize_picture(img, resize):
     img = torch.from_numpy(img)
-    img = img.astype(np.float32) / 255
     img = resize(img)
+    img = img.astype(np.float32) / 255
     return img
 
 

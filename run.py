@@ -10,7 +10,7 @@ libraries = (
     'pandas',
     'torchmetrics',
     'toolz',
-    'iteration-utilities'
+    'iteration-utilities',
 )
 
 os.system(f'pip install {" ".join(libraries)}')
