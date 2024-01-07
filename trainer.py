@@ -64,7 +64,8 @@ class Trainer:
                 self.iteration = iteration
                 self._verbosely_print(2, f'Iteration {iteration+1:>3}:', self._is_in_right_iteration)
                 preds = self.model(X.to(self.device))
-                self._gather_metrics(results, preds)
+                if self.metrics:
+                    self._gather_metrics(results, preds)
                 self._backwards(results, preds)
                 self._optimize()
                 del X; del preds
