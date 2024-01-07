@@ -3,9 +3,10 @@ import os
 import sys
 import logging
 
+sys.path.append('../input/img-seg-comp')
+
 import dataset
 
-sys.path.append('../input/img-seg-comp')
 
 # def create_logger(logger_name):
 #     # create logger
