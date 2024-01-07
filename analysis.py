@@ -53,18 +53,13 @@ def load_labels():
 def map_mask():
     mask_pixel, mask, pixel_type = get_maks_format()
     labels = load_labels()
-    for row in mask:
-        print(row)
-        for pixel in row:
-            pixel = tuple(pixel)
-            print('pixel:  ', pixel)
-            print('labels[L.COLOR]:  ', labels[L.COLOR])
-            print('labels[L.COLOR] == pixel:   ', labels[L.COLOR] == pixel)
-            print('labels.index[labels[L.COLOR] == pixel]:    ', labels.index[labels[L.COLOR] == pixel])
-            print('labels.index[labels[L.COLOR] == pixel][0]:   ', labels.index[labels[L.COLOR] == pixel][0])
-            break
-        break
-    return list((labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))][0] for row in mask for pixel in row))
+
+    label_dict = {tuple(row[L.COLOR]): idx for idx, row in labels.iterrows()}
+    flat_mask = mask.reshape(-1, mask.shape[-1])
+    label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
+
+    # return np.fromiter((labels.index[labels[L.COLOR] == tuple(pixel)][0] for row in mask for pixel in row), dtype=np.int32)
+    return label_indices
 
 
 def get_label_info():

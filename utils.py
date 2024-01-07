@@ -54,8 +54,10 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
   #   yield cv.imread(str(img_path)), cv.imread(str(mask_path))
 
 
-def normalize_mask(mask, labels):
-    mask = np.fromiter((labels.index[labels[L.COLOR] == tuple(pixel)][0] for row in mask for pixel in row), dtype=np.integer).resize(mask.size)
+def normalize_mask(mask, label_dict):
+    flat_mask = mask.reshape(-1, mask.shape[-1])
+    label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
+    mask =  label_indices.resize(mask.size)
     return mask
 
 
@@ -70,4 +72,5 @@ def normalize_picture(pic):
 
 
 def get_normalize(labels):
-    return lambda X, mask: (normalize_picture(X), normalize_mask(mask, labels))
+    label_dict = {tuple(row[L.COLOR]): idx for idx, row in labels.iterrows()}
+    return lambda X, mask: (normalize_picture(X), normalize_mask(mask, label_dict))
