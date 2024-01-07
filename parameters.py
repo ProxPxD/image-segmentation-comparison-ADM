@@ -45,7 +45,7 @@ class TrainData:
         'Precision': torchmetrics.Precision(task='multiclass', average='macro', num_classes=Parameters.n_classes),
         'F1': torchmetrics.F1Score(task='multiclass', num_classes=Parameters.n_classes),
         'Recall': torchmetrics.Recall(task='multiclass', average='micro', num_classes=Parameters.n_classes),
-        'IoU': torchmetrics.detection.iou.IntersectionOverUnion(),
+        # 'IoU': torchmetrics.detection.iou.IntersectionOverUnion(),
         # 'Cross-Entropy': None
     })
 
