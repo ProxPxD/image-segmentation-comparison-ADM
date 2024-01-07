@@ -46,7 +46,7 @@ def get_maks_format():
 def load_labels():
     labels = pd.read_csv(Paths.INPUT_LABELS, sep='\t', header=None)
     labels.columns = [L.COLOR, L.CLASS_NAME]
-    labels[L.COLOR] = labels[L.COLOR].apply(lambda text: tuple(map(int, text.split(' '))))
+    labels[L.COLOR] = labels[L.COLOR].apply(lambda text: tuple(map(int, text.split(' ')[::-1])))
     return labels
 
 
@@ -64,7 +64,7 @@ def map_mask():
             print('labels.index[labels[L.COLOR] == pixel][0]:   ', labels.index[labels[L.COLOR] == pixel][0])
             break
         break
-    return list((labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))].iloc[0] for row in mask for pixel in row))
+    return list((labels.index[labels[L.COLOR].map(tuple).eq(tuple(pixel))][0] for row in mask for pixel in row))
 
 
 def get_label_info():
