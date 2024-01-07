@@ -3,6 +3,18 @@ import os
 import sys
 import logging
 
+
+libraries = (
+    'opencv-python',
+    'torch',
+    'pandas',
+    'torchmetrics',
+    'toolz',
+    'iteration-utilities'
+)
+
+os.system(f'pip install {" ".join(libraries)}')
+
 sys.path.append('../input/img-seg-comp')
 
 import dataset
@@ -27,18 +39,6 @@ import dataset
 # 
 # logger.debug(f'modules: {sys.modules.keys()}')
 # logger.info(f'modules: {sys.modules.keys()}')
-
-
-libraries = (
-    'opencv-python',
-    'torch',
-    'pandas',
-    'torchmetrics',
-    'toolz',
-    'iteration-utilities'
-)
-
-os.system(f'pip install {" ".join(libraries)}')
 os.system('unzip data.zip')
 
 import torch
