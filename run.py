@@ -59,7 +59,7 @@ models = (
 )
 
 for model in models:
-    TrainData.optimizer = torch.optim.Adam(model.parameters(), lr=Parameters.lr, weight_decay=Parameters.weight_decay)
+    TrainData.optimizer = torch.optim.Adam(model.parameters(), lr=TrainData.lr, weight_decay=TrainData.weight_decay)
     model.to(Parameters.device)
     trainer = Trainer(model, writer, )
     train_loader, val_loader, test_loader = dataset.get_dataloaders(utils.normalize)
