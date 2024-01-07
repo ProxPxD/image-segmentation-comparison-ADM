@@ -18,7 +18,6 @@ class CamSeqDS(IterableDataset):
       yield from transposed
 
 
-
 def get_dataloaders(normalize=lambda args: args):
     path_tuples = list(utils.read_img_mask_name_pairs(Paths.INPUT_IMGAGES, mask_pattern=r'_L.png$', is_sorted_pairwise=True))
     dataset_paths = torch.utils.data.random_split(path_tuples, Parameters.dataset_persentages)

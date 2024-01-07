@@ -13,7 +13,7 @@ class MultiConv(nn.Module):
         super().__init__()
         self.n = len(channels) - 1
         if self.n < 1:
-            raise ValueException
+            raise ValueError
 
         if isinstance(kernel_sizes, int):
             kernel_sizes = list(repeat(kernel_sizes, len(channels)-1))
@@ -82,7 +82,6 @@ class OutConv(nn.Module):
 
     def forward(self, x):
         return self.conv(x)
-
 
 
 class UNet(nn.Module):

@@ -1,16 +1,12 @@
-from pathlib import Path
 import re
-from itertools import product, starmap
+from itertools import product
+from pathlib import Path
 from typing import Callable, Iterable
-import pandas as pd
 
-from iteration_utilities import starfilter
-import numpy as np
 import cv2 as cv
-
-from constants import Paths
+import numpy as np
+from iteration_utilities import starfilter
 from toolz import compose_left
-
 
 path_like = Path | str
 
@@ -51,23 +47,6 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
         yield img, mask
   # for img_path, mask_path in iterable:
   #   yield cv.imread(str(img_path)), cv.imread(str(mask_path))
-
-
-
-
-def get_dataloaders(normalize=lambda args: args):
-    path_tuples = list(utils.read_img_mask_name_pairs(Paths.INPUT_IMGAGES, mask_pattern=r'_L.png$', is_sorted_pairwise=True))
-    dataset_paths = torch.utils.data.random_split(path_tuples, Parameters.dataset_persentages)
-    datasets = map(lambda paths: CamSeqDS(paths, normalize), dataset_paths)
-    loaders = tuple(map(lambda ds: DataLoader(ds, batch_size=Parameters.batch_size), datasets))
-    return loaders
-
-
-def load_labels():
-    labels = pd.read_csv(Paths.INPUT_LABELS, sep='\t', header=None)
-    labels.columns = [L.COLOR, L.CLASS_NAME]
-    labels[L.COLOR] = labels[L.COLOR].apply(lambda text: np.fromiter(map(int, text.split(' ')), dtype=pixel_type))
-    return labels
 
 
 def normalize(X, mask):

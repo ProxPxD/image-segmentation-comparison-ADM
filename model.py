@@ -5,6 +5,7 @@ import math
 
 from itertools import repeat, pairwise
 
+
 class MultiConv(nn.Module):
     """(convolution => [BN] => ReLU) * n"""
 
