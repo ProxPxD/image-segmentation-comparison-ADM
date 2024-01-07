@@ -55,6 +55,7 @@ def path_to_numpy(iterable: Iterable, normalize: Callable[[np.ndarray, np.ndarra
 
 
 def normalize_mask(mask, labels):
+    print(list((labels.index[labels[L.COLOR] == pixel].iloc[0] for row in mask for pixel in row)))
     mask = np.fromiter((labels.index[labels[L.COLOR] == pixel].iloc[0] for row in mask for pixel in row), dtype=np.integer).resize(mask.size)
     return mask
 
