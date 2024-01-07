@@ -3,7 +3,6 @@ import os
 import sys
 import logging
 
-import analysis
 
 libraries = (
     'opencv-python',
@@ -19,6 +18,7 @@ os.system(f'pip install {" ".join(libraries)}')
 sys.path.append('../input/img-seg-comp')
 
 import dataset
+import analysis
 
 
 # def create_logger(logger_name):
