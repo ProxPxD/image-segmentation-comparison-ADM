@@ -30,7 +30,8 @@ class Parameters:
 class TrainData:
 
     optimizer: torch.optim.Optimizer # = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-    loss: Callable = torchmetrics.detection.iou.IntersectionOverUnion(num_classes=Parameters.n_classes)
+    # loss: Callable = torchmetrics.detection.iou.IntersectionOverUnion(num_classes=Parameters.n_classes)
+    loss: Callable = torchmetrics.JaccardIndex(task='multiclass', num_classes=Parameters.n_classes)
 
     lr: float = .005
     weight_decay: float =1e-5
