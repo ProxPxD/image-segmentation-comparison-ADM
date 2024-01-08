@@ -30,7 +30,8 @@ class Parameters:
 class TrainData:
 
     optimizer: torch.optim.Optimizer # = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-    loss: Callable = torchmetrics.detection.iou.IntersectionOverUnion()
+    # loss: Callable = torchmetrics.detection.iou.IntersectionOverUnion(num_classes=Parameters.n_classes)
+    loss: Callable = torchmetrics.JaccardIndex(task='multiclass', num_classes=Parameters.n_classes).to(Parameters.device)
 
     lr: float = .005
     weight_decay: float =1e-5
@@ -44,7 +45,7 @@ class TrainData:
         'Accuracy': torchmetrics.Accuracy(task='multiclass', average='macro', num_classes=Parameters.n_classes),
         'Precision': torchmetrics.Precision(task='multiclass', average='macro', num_classes=Parameters.n_classes),
         'F1': torchmetrics.F1Score(task='multiclass', average='macro', num_classes=Parameters.n_classes),
-        # 'Recall': torchmetrics.Recall(task='multiclass', average='macro', num_classes=Parameters.n_classes),
+        'Recall': torchmetrics.Recall(task='multiclass', average='macro', num_classes=Parameters.n_classes),
         # 'IoU': torchmetrics.detection.iou.IntersectionOverUnion(),
         # 'Cross-Entropy': None
     })
