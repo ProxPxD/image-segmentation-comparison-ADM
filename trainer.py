@@ -58,7 +58,7 @@ class Trainer:
         self.writer.add_scalar(full_label, to_write, self.counter.get(full_label))
 
     def train(self, train: torch.utils.data.DataLoader, test: torch.utils.data.DataLoader, validation: torch.utils.data.DataLoader = None, epochs: int = None, verbose: int = None):
-        print(f'Starting running on {self.device}')
+        self._verbosely_print(1, f'Starting running on {self.device}')
         if epochs:
             self.epochs = epochs
         if verbose is not None:
@@ -76,6 +76,9 @@ class Trainer:
                 self._optimize()
                 del X; del preds
                 torch.cuda.empty_cache()
+            if self.should_validate() and validation:
+                self.validate(validation)
+
             if self.should_save():
                 self.save()
 
@@ -103,14 +106,17 @@ class Trainer:
     def should_save(self):
         return self.epoch and self.epoch % self.save_every_n_epoch == 0
 
-    def should_validate(self):
-        return self.epoch and self.validate_every_n_epoch is not None and self.epoch % self.validate_every_n_epoch == 0
-
     def save(self):
         path = self.get_model_path(self.model_name, self.epoch, self.iteration)
         if self.verbose > 2:
             self.logger(f'Saving {path}')
         torch.save(self.model.state_dict(), path)
+
+    def should_validate(self):
+        return self.epoch and self.validate_every_n_epoch is not None and self.epoch % self.validate_every_n_epoch == 0
+
+    def validate(self, validation: torch.utils.data.DataLoader):
+        pass
 
     def load(self):
         ...
