@@ -67,13 +67,12 @@ def get_resize(shape):
 
 
 def normalize_mask(mask, label_dict, resize=lambda img: img):
-    orig_shape = mask.shape[:-1]
     flat_mask = mask.reshape(-1, mask.shape[-1])
     label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
-    mask = label_indices.reshape(tuple(orig_shape) + (1,))
+    mask = label_indices.reshape(tuple(mask.shape[:-1]) + (1,))
     mask = mask.transpose((2, 0, 1))
     mask = resize(mask)
-    mask = mask.reshape(orig_shape)
+    mask = mask.reshape(mask.shape[1:])
     # mask = torch.from_numpy(mask).to(torch.int64)
     # mask = torch.nn.functional.one_hot(mask, num_classes=Parameters.n_classes)
     # mask = mask.permute(0, 3, 1, 2).squeeze(0)
