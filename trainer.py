@@ -93,7 +93,7 @@ class Trainer:
         full_label = f'Loss - train'
         self._count(full_label, loss_result)
         self._verbosely_print(3, f'{full_label}: {loss_result}')
-        loss_result.backward(retain_graph=True)
+        loss_result.backward(retain_graph=False)
 
     def _optimize(self):
         if self.optimizer:
