@@ -17,9 +17,11 @@ class Trainer:
                  get_model_path: Callable[[str, int, int], str] = None,
                  save_every_n_epoch: int = 1,
                  save_every_n_iteration: int = None,
+                 validate_every_n_epoch: int = None,
                  optimizer = None,
                  metrics = None,
                  loss = None,
+                 transform_loss: Callable = None,
                  logger = print,
                  device: str = None,
                  verbose: Optional[int] = 1,
@@ -31,8 +33,10 @@ class Trainer:
         self.get_model_path: Callable[[str, int, int], str] = get_model_path
         self.save_every_n_epoch: int = save_every_n_epoch
         self.save_every_n_iteration: int = save_every_n_iteration
+        self.validate_every_n_epoch: int = validate_every_n_epoch
         self.optimizer = optimizer
         self.loss = loss
+        self.transform_loss = transform_loss
         self.metrics: dict = metrics
         self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -56,7 +60,7 @@ class Trainer:
         self.writer.add_scalar(full_label, to_write, self.counter.get(full_label))
 
     def train(self, train: torch.utils.data.DataLoader, test: torch.utils.data.DataLoader, validation: torch.utils.data.DataLoader = None, epochs: int = None, verbose: int = None):
-        print(f'Starting running on {self.device}')
+        self._verbosely_print(1, f'Starting running on {self.device}')
         if epochs:
             self.epochs = epochs
         if verbose is not None:
@@ -74,25 +78,30 @@ class Trainer:
                 self._optimize()
                 del X; del preds
                 torch.cuda.empty_cache()
+            if self.should_validate() and validation:
+                self.validate(validation)
+
             if self.should_save():
                 self.save()
 
-    def _gather_metrics(self, results, preds):
+    def _gather_metrics(self, results, preds, mode: str = 'train'):
         for metric_name, metric in self.metrics.items():
-            self._verbosely_print(3, f'Calculating {metric_name} for train')
+            self._verbosely_print(3, f'Calculating {metric_name} for {mode}')
             metric = metric.to(self.device)
             metric_result = metric(preds.to(self.device), results.to(self.device)).item()
-            full_label = f'{metric_name} - train'
+            full_label = f'{metric_name} - {mode}'
             self._count(full_label, metric_result)
 
     def _backwards(self, results, preds):
         self._verbosely_print(3, f'Calculating loss')
         loss_result = self.loss(preds.to(self.device), results.to(self.device))
         loss_result.requires_grad = True
+        if self.transform_loss:
+            loss_result = self.transform_loss(loss_result)
         full_label = f'Loss - train'
         self._count(full_label, loss_result)
         self._verbosely_print(3, f'{full_label}: {loss_result}')
-        loss_result.backward(retain_graph=True)
+        loss_result.backward(retain_graph=False)
 
     def _optimize(self):
         if self.optimizer:
@@ -107,6 +116,21 @@ class Trainer:
         if self.verbose > 2:
             self.logger(f'Saving {path}')
         torch.save(self.model.state_dict(), path)
+
+    def should_validate(self):
+        return self.epoch and self.validate_every_n_epoch is not None and self.epoch % self.validate_every_n_epoch == 0
+
+    def validate(self, validation: torch.utils.data.DataLoader):
+        self.model.eval()
+        self._verbosely_print(2, 'Validating')
+        for iteration, (X, results) in enumerate(validation):
+            X = X.to(self.device)
+            self._verbosely_print(4, f'Iteration {iteration+1:>3}:')
+            with torch.no_grad():
+                preds = self.model(X)
+            self._gather_metrics(results, preds, 'val')
+
+        self.model.train()
 
     def load(self):
         ...
