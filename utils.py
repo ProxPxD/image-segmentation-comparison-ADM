@@ -72,7 +72,6 @@ def normalize_mask(mask, label_dict, resize=lambda img: img):
     mask = label_indices.reshape(tuple(mask.shape[:-1]) + (1,))
     mask = mask.transpose((2, 0, 1))
     mask = resize(mask)
-    mask = mask.transpose(1, 2, 0)
     return mask
 
 
