@@ -140,7 +140,7 @@ class Trainer:
             last_existing = path
             iteration += 1
             path = self.get_model_path(self.model_name, epoch, iteration)
-            if not os.path.exists(path) or path == last_existing:
+            if path == last_existing or not os.path.exists(path):
                 epoch += 1
                 iteration = 0
                 path = self.get_model_path(self.model_name, epoch, iteration)
