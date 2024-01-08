@@ -82,12 +82,12 @@ class Trainer:
             if self.should_save():
                 self.save()
 
-    def _gather_metrics(self, results, preds):
+    def _gather_metrics(self, results, preds, mode: str = 'train'):
         for metric_name, metric in self.metrics.items():
-            self._verbosely_print(3, f'Calculating {metric_name} for train')
+            self._verbosely_print(3, f'Calculating {metric_name} for {mode}')
             metric = metric.to(self.device)
             metric_result = metric(preds.to(self.device), results.to(self.device)).item()
-            full_label = f'{metric_name} - train'
+            full_label = f'{metric_name} - {mode}'
             self._count(full_label, metric_result)
 
     def _backwards(self, results, preds):
@@ -116,7 +116,16 @@ class Trainer:
         return self.epoch and self.validate_every_n_epoch is not None and self.epoch % self.validate_every_n_epoch == 0
 
     def validate(self, validation: torch.utils.data.DataLoader):
-        pass
+        self.model.eval()
+        self._verbosely_print(2, 'Validating')
+        for iteration, (X, results) in enumerate(validation):
+            X = X.to(self.device)
+            self._verbosely_print(4, f'Iteration {iteration+1:>3}:')
+            with torch.no_grad():
+                preds = self.model(X)
+            self._gather_metrics(results, preds, 'val')
+
+        self.model.train()
 
     def load(self):
         ...
