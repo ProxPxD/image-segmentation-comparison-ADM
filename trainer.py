@@ -88,6 +88,7 @@ class Trainer:
     def _backwards(self, results, preds):
         self._verbosely_print(3, f'Calculating loss')
         loss_result = self.loss(preds.to(self.device), results.to(self.device))
+        loss_result.requires_grad = True
         full_label = f'Loss - train'
         self._count(full_label, loss_result)
         self._verbosely_print(3, f'{full_label}: {loss_result}')
