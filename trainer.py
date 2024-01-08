@@ -45,7 +45,7 @@ class Trainer:
         self.iteration: Optional[int] = None
 
     def _is_in_right_iteration(self):
-        return self.iteration % 1 == 0  # to implemnet if needed a variable iteration
+        return self.iteration % 1 == 0  # to implement if needed a variable iteration
 
     def _verbosely_print(self, required_verbose, to_print, and_cond=lambda: True):
         if self.verbose >= required_verbose and and_cond():
