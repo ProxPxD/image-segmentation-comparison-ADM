@@ -71,11 +71,12 @@ def normalize_mask(mask, label_dict, resize=lambda img: img):
     label_indices = np.array([label_dict[tuple(pixel)] for pixel in flat_mask], dtype=np.int32)
     mask = label_indices.reshape(tuple(mask.shape[:-1]) + (1,))
     print('mask pre', mask.shape)
-    mask = resize(mask)
     mask = mask.transpose((2, 0, 1))
+    print('mask post t1', mask.shape)
+    mask = resize(mask)
     print('mask post', mask.shape)
     mask = mask.transpose(1, 2, 0)
-    print('mask post transposing', mask.shape)
+    print('mask post t2', mask.shape)
     return mask
 
 
