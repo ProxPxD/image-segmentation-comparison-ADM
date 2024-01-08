@@ -69,7 +69,16 @@ for model in models:
     optimizer = torch.optim.Adam(model.parameters(), lr=TrainData.lr, weight_decay=TrainData.weight_decay)
     train_data = TrainData(optimizer)
     model.to(Parameters.device)
-    trainer = Trainer(model, writer, verbose=3, metrics=train_data.metrics, optimizer=train_data.optimizer, loss=train_data.loss, transform_loss=lambda l: 1-l, device=Parameters.device)
+    trainer = Trainer(
+        model,
+        writer=writer,
+        verbose=3,
+        metrics=train_data.metrics,
+        optimizer=train_data.optimizer,
+        loss=train_data.loss,
+        transform_loss=lambda l: 1-l,
+        device=Parameters.device
+    )
     print('Data Path:', Paths.DATA.resolve())
     print('pwd:', os.system('pwd'))
     train_loader, val_loader, test_loader = dataset.get_dataloaders(normalize)
