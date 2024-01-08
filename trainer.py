@@ -14,7 +14,7 @@ class Trainer:
                  *,
                  model_name: str = 'model',
                  epochs: int = 5,
-                 get_model_path: Callable[[str, int, int], str] = None,
+                 get_model_path: Callable[[str, int, int], str] = lambda name, epoch, iteration: f'{name}_e{epoch}',
                  save_every_n_epoch: int = 1,
                  save_every_n_iteration: int = None,
                  validate_every_n_epoch: int = None,
@@ -140,7 +140,7 @@ class Trainer:
             last_existing = path
             iteration += 1
             path = self.get_model_path(self.model_name, epoch, iteration)
-            if not os.path.exists(path):
+            if not os.path.exists(path) or path == last_existing:
                 epoch += 1
                 iteration = 0
                 path = self.get_model_path(self.model_name, epoch, iteration)
