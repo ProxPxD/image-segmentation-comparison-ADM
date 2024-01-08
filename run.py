@@ -72,6 +72,7 @@ for model in models:
     trainer = Trainer(
         model,
         writer=writer,
+        get_model_path=lambda name, epoch, iteration: f'{name}_e{epoch}_i{iteration}',
         verbose=3,
         metrics=train_data.metrics,
         optimizer=train_data.optimizer,
