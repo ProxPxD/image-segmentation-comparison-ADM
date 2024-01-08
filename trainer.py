@@ -17,7 +17,7 @@ class Trainer:
                  get_model_path: Callable[[str, int, int], str] = None,
                  save_every_n_epoch: int = 1,
                  save_every_n_iteration: int = None,
-                 validate_every_n_epoch: int = 5,
+                 validate_every_n_epoch: int = None,
                  optimizer = None,
                  metrics = None,
                  loss = None,
@@ -104,7 +104,7 @@ class Trainer:
         return self.epoch and self.epoch % self.save_every_n_epoch == 0
 
     def should_validate(self):
-        return self.epoch and self.
+        return self.epoch and self.validate_every_n_epoch is not None and self.epoch % self.validate_every_n_epoch == 0
 
     def save(self):
         path = self.get_model_path(self.model_name, self.epoch, self.iteration)
