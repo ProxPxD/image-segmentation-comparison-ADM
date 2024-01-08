@@ -108,7 +108,7 @@ class Trainer:
             self.optimizer.zero_grad()
 
     def should_save(self):
-        return self.epoch and self.epoch % self.save_every_n_epoch == 0
+        return self.get_model_path and self.epoch and self.epoch % self.save_every_n_epoch == 0
 
     def save(self):
         path = self.get_model_path(self.model_name, self.epoch, self.iteration)
@@ -132,7 +132,18 @@ class Trainer:
         self.model.train()
 
     def load(self):
-        ...
+        epoch = iteration = 0
+        path = self.get_model_path(self.model_name, epoch, iteration)
+        last_existing = None
+        while os.path.exists(path):
+            last_existing = path
+            iteration += 1
+            path = self.get_model_path(self.model_name, epoch, iteration)
+            if not os.path.exists(path):
+                epoch += 1
+                iteration = 0
+                path = self.get_model_path(self.model_name, epoch, iteration)
+        self.load_if_exists(last_existing)
 
     def load_if_exists(self, path):
         existed = os.path.exists(path)
