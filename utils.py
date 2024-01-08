@@ -72,6 +72,8 @@ def normalize_mask(mask, label_dict, resize=lambda img: img):
     mask = label_indices.reshape(tuple(mask.shape[:-1]) + (1,))
     mask = mask.transpose((2, 0, 1))
     mask = resize(mask)
+    mask = torch.nn.functional.one_hot(mask, num_classes=Parameters.n_classes)
+    mask = mask.permute(0, 3, 1, 2).squeeze(0).float()
     return mask
 
 
