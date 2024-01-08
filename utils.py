@@ -73,6 +73,8 @@ def normalize_mask(mask, label_dict, resize=lambda img: img):
     print('mask pre', mask.size)
     mask = resize(mask)
     print('mask post', mask.size)
+    mask = mask.transpose(1, 2, 0)
+    print('mask post transposing', mask.size)
     return mask
 
 
