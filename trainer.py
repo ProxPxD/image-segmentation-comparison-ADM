@@ -17,6 +17,7 @@ class Trainer:
                  get_model_path: Callable[[str, int, int], str] = None,
                  save_every_n_epoch: int = 1,
                  save_every_n_iteration: int = None,
+                 validate_every_n_epoch: int = 5,
                  optimizer = None,
                  metrics = None,
                  loss = None,
@@ -31,6 +32,7 @@ class Trainer:
         self.get_model_path: Callable[[str, int, int], str] = get_model_path
         self.save_every_n_epoch: int = save_every_n_epoch
         self.save_every_n_iteration: int = save_every_n_iteration
+        self.validate_every_n_epoch: int = validate_every_n_epoch
         self.optimizer = optimizer
         self.loss = loss
         self.metrics: dict = metrics
@@ -100,6 +102,9 @@ class Trainer:
 
     def should_save(self):
         return self.epoch and self.epoch % self.save_every_n_epoch == 0
+
+    def should_validate(self):
+        return self.epoch and self.
 
     def save(self):
         path = self.get_model_path(self.model_name, self.epoch, self.iteration)
