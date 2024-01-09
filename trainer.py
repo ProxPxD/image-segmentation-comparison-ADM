@@ -68,6 +68,9 @@ class Trainer:
             self._verbosely_print(1, f'---Epoch-{epoch+1}/{self.epochs}----------------------')
             for iteration, (X, results) in enumerate(train):
                 self.iteration = iteration
+                if X.shape != results.shape:
+                    self._verbosely_print(2, f'Batch sizes do not match! X({X.shape}), results({results.shape})')\
+                    continue
                 self._verbosely_print(2, f'Iteration {iteration+1:>3}:', self._is_in_right_iteration)
                 preds = self.model(X.to(self.device))
                 if self.metrics:
