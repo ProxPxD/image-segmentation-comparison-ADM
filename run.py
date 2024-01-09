@@ -11,6 +11,7 @@ libraries = (
     'torchmetrics',
     'toolz',
     'iteration-utilities',
+    'segmentation-models-pytorch'
 )
 
 os.system(f'pip install {" ".join(libraries)}')
