@@ -35,7 +35,7 @@ class TrainData:
     optimizer: torch.optim.Optimizer # = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # loss: Callable = torchmetrics.detection.iou.IntersectionOverUnion(num_classes=Parameters.n_classes)
     # loss: Callable = torchmetrics.JaccardIndex(task='multiclass', num_classes=Parameters.n_classes).to(Parameters.device)
-    loss: Callable = JaccardLoss(mode='multiclass')
+    loss: Callable = lambda outputs, labels: F.binary_cross_entropy_with_logits(outputs.squeeze(), labels.float())
 
     lr: float = .005
     weight_decay: float =1e-5
