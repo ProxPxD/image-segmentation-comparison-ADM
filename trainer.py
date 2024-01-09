@@ -68,13 +68,17 @@ class Trainer:
             self._verbosely_print(1, f'---Epoch-{epoch+1}/{self.epochs}----------------------')
             for iteration, (X, results) in enumerate(train):
                 self.iteration = iteration
-                if X.shape[0] != results.shape[0]:
-                    self._verbosely_print(2, f'Batch sizes do not match! X({X.shape}), results({results.shape})')
-                    continue
                 self._verbosely_print(2, f'Iteration {iteration+1:>3}:', self._is_in_right_iteration)
                 preds = self.model(X.to(self.device))
                 if self.metrics:
                     self._gather_metrics(results, preds)
+                print(f'preds shape: {preds.shape}')
+                print(f'preds shape[0]: {preds.shape[0]}')
+                print(f'results shape: {results.shape}')
+                print(f'results shape[0]: {results.shape[0]}')
+                if preds.shape[0] != results.shape[0]:
+                    self._verbosely_print(2, f'Batch sizes do not match! preds({preds.shape}), results({results.shape})')
+                    continue
                 self._backwards(results, preds)
                 self._optimize()
                 del X; del preds
