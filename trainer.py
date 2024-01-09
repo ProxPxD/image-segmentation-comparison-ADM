@@ -5,6 +5,7 @@ from typing import Optional, Callable
 import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
+from parameters import Parameters
 
 
 class Trainer:
@@ -76,7 +77,7 @@ class Trainer:
                 print(f'preds shape[0]: {preds.shape[0]}')
                 print(f'results shape: {results.shape}')
                 print(f'results shape[0]: {results.shape[0]}')
-                if preds.shape[0] != results.shape[0]:
+                if preds.shape[0] != Parameters.batch_size:
                     self._verbosely_print(2, f'Batch sizes do not match! preds({preds.shape}), results({results.shape})')
                     continue
                 self._backwards(results, preds)
