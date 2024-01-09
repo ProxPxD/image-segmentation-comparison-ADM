@@ -3,6 +3,9 @@ from typing import Callable
 
 import torch
 import torchmetrics
+import torch.nn as nn
+
+from segmentation_models_pytorch.losses import JaccardLoss
 
 
 @dataclass
@@ -31,7 +34,8 @@ class TrainData:
 
     optimizer: torch.optim.Optimizer # = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # loss: Callable = torchmetrics.detection.iou.IntersectionOverUnion(num_classes=Parameters.n_classes)
-    loss: Callable = torchmetrics.JaccardIndex(task='multiclass', num_classes=Parameters.n_classes).to(Parameters.device)
+    # loss: Callable = torchmetrics.JaccardIndex(task='multiclass', num_classes=Parameters.n_classes).to(Parameters.device)
+    loss: Callable = JaccardLoss(mode='multiclass')
 
     lr: float = .005
     weight_decay: float =1e-5
