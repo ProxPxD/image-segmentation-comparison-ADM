@@ -58,21 +58,24 @@ if run_analysis:
 
 writer = SummaryWriter(TrainData.log_dir)
 
-models = (
-    UNet(Parameters.permutated_image_size[0], Parameters.n_classes, depth=3),
-)
+
+models = {
+    'unet': UNet(Parameters.permutated_image_size[0], Parameters.n_classes, depth=3),
+}
 
 labels = analysis.load_labels()
 normalize = utils.get_normalize(labels)
 
-for model in models:
+
+for name, model in models.items():
     optimizer = torch.optim.Adam(model.parameters(), lr=TrainData.lr, weight_decay=TrainData.weight_decay)
     train_data = TrainData(optimizer)
     model.to(Parameters.device)
     trainer = Trainer(
         model,
         writer=writer,
-        get_model_path=lambda name, epoch, iteration: f'{name}_e{epoch}_i{iteration}',
+        model_name=name,
+        get_model_path=lambda model_name, epoch, iteration: f'{model_name}_e{epoch}',
         verbose=3,
         metrics=train_data.metrics,
         optimizer=train_data.optimizer,
