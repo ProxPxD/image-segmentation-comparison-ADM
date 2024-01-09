@@ -69,7 +69,7 @@ class Trainer:
             for iteration, (X, results) in enumerate(train):
                 self.iteration = iteration
                 if X.shape[0] != results.shape[0]:
-                    self._verbosely_print(2, f'Batch sizes do not match! X({X.shape}), results({results.shape})')\
+                    self._verbosely_print(2, f'Batch sizes do not match! X({X.shape}), results({results.shape})')
                     continue
                 self._verbosely_print(2, f'Iteration {iteration+1:>3}:', self._is_in_right_iteration)
                 preds = self.model(X.to(self.device))
@@ -95,12 +95,6 @@ class Trainer:
 
     def _backwards(self, results, preds):
         self._verbosely_print(3, f'Calculating loss')
-        print(f'results: {results.shape}')
-        print(f'preds: {preds.shape}')
-        print(results)
-        print(' \n \n \n \n')
-        print(preds)
-
         loss_result = self.loss(preds.to(self.device), results.to(self.device))
         print(f'loss_result.grad_fn: {loss_result.grad_fn}')
         # loss_result.requires_grad = True
