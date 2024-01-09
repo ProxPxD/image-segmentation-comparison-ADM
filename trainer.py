@@ -94,6 +94,12 @@ class Trainer:
 
     def _backwards(self, results, preds):
         self._verbosely_print(3, f'Calculating loss')
+        print(f'results: {results.shape}')
+        print(f'preds: {preds.shape}')
+        print(results)
+        print(' \n \n \n \n')
+        print(preds)
+
         loss_result = self.loss(preds.to(self.device), results.to(self.device))
         print(f'loss_result.grad_fn: {loss_result.grad_fn}')
         # loss_result.requires_grad = True
