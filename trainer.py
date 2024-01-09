@@ -21,7 +21,6 @@ class Trainer:
                  optimizer = None,
                  metrics = None,
                  loss = None,
-                 transform_loss: Callable = None,
                  logger = print,
                  device: str = None,
                  verbose: Optional[int] = 1,
@@ -36,7 +35,6 @@ class Trainer:
         self.validate_every_n_epoch: int = validate_every_n_epoch
         self.optimizer = optimizer
         self.loss = loss
-        self.transform_loss = transform_loss
         self.metrics: dict = metrics
         self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -103,8 +101,6 @@ class Trainer:
         loss_result = self.loss(preds.to(self.device), results.to(self.device))
         print(f'loss_result.grad_fn: {loss_result.grad_fn}')
         # loss_result.requires_grad = True
-        if self.transform_loss:
-            loss_result = self.transform_loss(loss_result)
         full_label = f'Loss - train'
         self._count(full_label, loss_result)
         self._verbosely_print(3, f'{full_label}: {loss_result}')
