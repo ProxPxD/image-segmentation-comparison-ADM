@@ -4,6 +4,7 @@ from typing import Callable
 import torch
 import torchmetrics
 import torch.nn as nn
+import torch.nn.functional as F
 
 from segmentation_models_pytorch.losses import JaccardLoss
 
