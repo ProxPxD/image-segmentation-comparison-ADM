@@ -106,10 +106,9 @@ for name, model in models.items():
                 indices = range(last_index, curr_index+1)
                 for index, pred in zip(indices, preds):
                     class_mask = np.argmax(pred.cpu().detach().numpy(), axis=0).astype(np.uint8)
-                    print('argmax:', class_mask)
                     color_mask = np.vectorize(lambda value: labels.loc[value, L.COLOR])(class_mask)
-                    print(f'Color mask dimensions: {color_mask.shape}')
                     print('color mask:', color_mask)
+                    # print(f'Color mask dimensions: {color_mask.shape}')
 
                     img_path = test_loader.dataset.path_tuples[index][0]
                     new_mask_name = img_path.replace('.png', '_pred.png').rsplit('/', 1)[-1]
