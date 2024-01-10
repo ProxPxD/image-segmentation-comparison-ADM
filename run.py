@@ -20,6 +20,7 @@ libraries = (
 os.system(f'pip install {" ".join(libraries)}')
 
 sys.path.append('../input/img-seg-comp')
+os.makedirs('./models')
 
 
 import dataset
