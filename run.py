@@ -106,7 +106,7 @@ for name, model in models.items():
                 indices = range(last_index, curr_index+1)
                 for index, pred in zip(indices, preds):
                     class_mask = np.argmax(pred.cpu().detach().numpy(), axis=0).astype(np.uint8)
-                    color_mask = np.stack(*np.vectorize(lambda value: labels.loc[value, L.COLOR])(class_mask), axis=0)
+                    color_mask = np.stack(np.vectorize(lambda value: labels.loc[value, L.COLOR])(class_mask), axis=0)
                     print('color mask:', color_mask)
                     print(f'Color mask dimensions: {color_mask.shape}')
 
