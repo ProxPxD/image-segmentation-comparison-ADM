@@ -142,6 +142,8 @@ class Trainer:
     def load(self):
         epoch = iteration = 0
         path = self.get_model_path(self.model_name, epoch, iteration)
+        path = '../input/img-seg-comp/models/' + path
+        print(path)
         last_existing = None
         while os.path.exists(path):
             last_existing = path
