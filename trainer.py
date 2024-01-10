@@ -5,6 +5,7 @@ from typing import Optional, Callable
 import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
+from parameters import Parameters
 
 
 class Trainer:
@@ -45,6 +46,7 @@ class Trainer:
 
         self.epoch: Optional[int] = None
         self.iteration: Optional[int] = None
+        self.load()
 
     def _is_in_right_iteration(self):
         return self.iteration % 1 == 0  # to implement if needed a variable iteration
@@ -68,13 +70,17 @@ class Trainer:
             self._verbosely_print(1, f'---Epoch-{epoch+1}/{self.epochs}----------------------')
             for iteration, (X, results) in enumerate(train):
                 self.iteration = iteration
-                if X.shape[0] != results.shape[0]:
-                    self._verbosely_print(2, f'Batch sizes do not match! X({X.shape}), results({results.shape})')
-                    continue
                 self._verbosely_print(2, f'Iteration {iteration+1:>3}:', self._is_in_right_iteration)
                 preds = self.model(X.to(self.device))
                 if self.metrics:
                     self._gather_metrics(results, preds)
+                print(f'preds shape: {preds.shape}')
+                print(f'preds shape[0]: {preds.shape[0]}')
+                print(f'results shape: {results.shape}')
+                print(f'results shape[0]: {results.shape[0]}')
+                if preds.shape[0] != Parameters.batch_size:
+                    self._verbosely_print(2, f'Batch sizes do not match! preds({preds.shape}), results({results.shape})')
+                    continue
                 self._backwards(results, preds)
                 self._optimize()
                 del X; del preds
@@ -123,18 +129,20 @@ class Trainer:
     def validate(self, validation: torch.utils.data.DataLoader):
         self.model.eval()
         self._verbosely_print(2, 'Validating')
-        for iteration, (X, results) in enumerate(validation):
-            X = X.to(self.device)
-            self._verbosely_print(4, f'Iteration {iteration+1:>3}:')
-            with torch.no_grad():
-                preds = self.model(X)
-            self._gather_metrics(results, preds, 'val')
+        with torch.no_grad():
+            for iteration, (X, results) in enumerate(validation):
+                X = X.to(self.device)
+                self._verbosely_print(4, f'Iteration {iteration+1:>3}:')
+                with torch.no_grad():
+                    preds = self.model(X)
+                self._gather_metrics(results, preds, 'val')
 
         self.model.train()
 
     def load(self):
-        epoch = iteration = 0
+        epoch = iteration = 4
         path = self.get_model_path(self.model_name, epoch, iteration)
+        path = '../input/img-seg-comp/models/' + path
         last_existing = None
         while os.path.exists(path):
             last_existing = path
@@ -144,6 +152,9 @@ class Trainer:
                 epoch += 1
                 iteration = 0
                 path = self.get_model_path(self.model_name, epoch, iteration)
+                path = '../input/img-seg-comp/models/' + path
+        print(path)
+        self._verbosely_print(3, f'Last existing model path: {last_existing}')
         self.load_if_exists(last_existing)
 
     def load_if_exists(self, path):
