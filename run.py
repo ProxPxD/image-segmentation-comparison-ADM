@@ -105,9 +105,11 @@ for name, model in models.items():
                 curr_index = test_loader.dataset.index
                 indices = range(last_index, curr_index+1)
                 for index, pred in zip(indices, preds):
-                    class_mask = np.argmax(pred.cpu().numpy(), axis=2).astype(np.uint8)
-                    color_mask = np.array(labels.loc[class_mask.flatten()].values.reshape(*class_mask.shape[:-1]))
+                    class_mask = np.argmax(pred.cpu().numpy(), axis=0).astype(np.uint8)
+                    print('argmax:', class_mask)
+                    color_mask = np.fromiter((labels.loc[value] for value in np.nditer(class_mask)), class_mask.dtype).reshape(*class_mask.shape[:-1])
                     print(f'Color mask dimensions: {color_mask.shape}')
+                    print('color mask:', color_mask)
 
                     img_path = test_loader.dataset.path_tuples[index][0]
                     new_mask_name = img_path.replace('.png', '_pred.png').rsplit('/', 1)[-1]
