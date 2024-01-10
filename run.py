@@ -81,6 +81,7 @@ for name, model in models.items():
         metrics=train_data.metrics,
         optimizer=train_data.optimizer,
         loss=train_data.loss,
+        validate_every_n_epoch=1,
         device=Parameters.device
     )
     print('Data Path:', Paths.DATA.resolve())

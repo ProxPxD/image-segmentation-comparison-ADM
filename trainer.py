@@ -129,12 +129,13 @@ class Trainer:
     def validate(self, validation: torch.utils.data.DataLoader):
         self.model.eval()
         self._verbosely_print(2, 'Validating')
-        for iteration, (X, results) in enumerate(validation):
-            X = X.to(self.device)
-            self._verbosely_print(4, f'Iteration {iteration+1:>3}:')
-            with torch.no_grad():
-                preds = self.model(X)
-            self._gather_metrics(results, preds, 'val')
+        with torch.no_grad():
+            for iteration, (X, results) in enumerate(validation):
+                X = X.to(self.device)
+                self._verbosely_print(4, f'Iteration {iteration+1:>3}:')
+                with torch.no_grad():
+                    preds = self.model(X)
+                self._gather_metrics(results, preds, 'val')
 
         self.model.train()
 
