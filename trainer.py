@@ -140,10 +140,9 @@ class Trainer:
         self.model.train()
 
     def load(self):
-        epoch = iteration = 0
+        epoch = iteration = 4
         path = self.get_model_path(self.model_name, epoch, iteration)
         path = '../input/img-seg-comp/models/' + path
-        print(path)
         last_existing = None
         while os.path.exists(path):
             last_existing = path
@@ -153,6 +152,8 @@ class Trainer:
                 epoch += 1
                 iteration = 0
                 path = self.get_model_path(self.model_name, epoch, iteration)
+                path = '../input/img-seg-comp/models/' + path
+        print(path)
         self._verbosely_print(3, f'Last existing model path: {last_existing}')
         self.load_if_exists(last_existing)
 
