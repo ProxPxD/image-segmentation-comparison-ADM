@@ -18,6 +18,16 @@ os.system(f'pip install {" ".join(libraries)}')
 
 sys.path.append('../input/img-seg-comp')
 
+from kaggle_scripts import move_and_remove_subdirectories
+
+source_model_dir = '../input/img-seg-comp/models/models'
+destination_model_dir = '../input/img-seg-comp/models'
+source_log_dir = '../input/img-seg-comp/logs/logs'
+destination_log_dir = '../input/img-seg-comp/logs'
+move_and_remove_subdirectories(source_model_dir, destination_model_dir)
+move_and_remove_subdirectories(source_log_dir, destination_log_dir)
+
+
 import dataset
 import analysis
 
