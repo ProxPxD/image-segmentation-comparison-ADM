@@ -46,6 +46,7 @@ class Trainer:
 
         self.epoch: Optional[int] = None
         self.iteration: Optional[int] = None
+        self.load()
 
     def _is_in_right_iteration(self):
         return self.iteration % 1 == 0  # to implement if needed a variable iteration
@@ -149,6 +150,7 @@ class Trainer:
                 epoch += 1
                 iteration = 0
                 path = self.get_model_path(self.model_name, epoch, iteration)
+        self._verbosely_print(3, f'Last existing model path: {last_existing}')
         self.load_if_exists(last_existing)
 
     def load_if_exists(self, path):

@@ -37,7 +37,7 @@ import analysis
 #     logger.addHandler(streamHandler)
 #     return logger
 # 
-# logger = create_logger('dupa')
+# logger = create_logger('logger')
 # 
 # logger.debug(f'modules: {sys.modules.keys()}')
 # logger.info(f'modules: {sys.modules.keys()}')
