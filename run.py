@@ -55,7 +55,7 @@ import utils
 from parameters import Parameters, TrainData
 from trainer import Trainer
 from unet import UNet
-from constants import Paths
+from constants import Paths, L
 
 run_analysis = True
 
@@ -107,8 +107,7 @@ for name, model in models.items():
                 for index, pred in zip(indices, preds):
                     class_mask = np.argmax(pred.cpu().detach().numpy(), axis=0).astype(np.uint8)
                     print('argmax:', class_mask)
-                    color_mask = np.vectorize(lambda value: labels.loc[value])(class_mask)
-                    # color_mask = np.fromiter((labels.loc[value] for value in np.nditer(class_mask)), 'Tuple[int, int, int]').reshape(*class_mask.shape[:-1])
+                    color_mask = np.vectorize(lambda value: labels.loc[value, L.COLOR])(class_mask)
                     print(f'Color mask dimensions: {color_mask.shape}')
                     print('color mask:', color_mask)
 
