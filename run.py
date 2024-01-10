@@ -101,7 +101,7 @@ for name, model in models.items():
             last_index = 0
             os.mkdir('predictions')
             for X, results in test_loader:
-                preds = trainer.model(X)
+                preds = trainer.model(X.to(Parameters.device))
                 curr_index = test_loader.dataset.index
                 indices = range(last_index, curr_index+1)
                 for index, pred in zip(indices, preds):
