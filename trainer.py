@@ -79,7 +79,7 @@ class Trainer:
                 self._optimize()
                 del X; del preds
                 torch.cuda.empty_cache()
-            if self.should_validate() and validation:
+            if self.should_validate() and validation is not None:
                 self.validate(validation)
 
             if self.should_save():
