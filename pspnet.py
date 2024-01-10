@@ -1,6 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
+from torchvision.models import resnet18
 
 
 class PyramidPoolingModule(nn.Module):
@@ -42,12 +43,14 @@ class PyramidPoolingModule(nn.Module):
 
 
 class PSPNet(nn.Module):
-    def __init__(self, in_channels, num_classes, cnn_depth=3, pool_sizes=(1,2,3,6), cnn_type='cnn'):
+    def __init__(self, in_channels, num_classes, cnn_depth=3, pool_sizes=(1,2,3,6), cnn_type='resnet18'):
         super().__init__()
 
         # Define your CNN backbone (FCN in this case)
         if cnn_type == 'cnn':
             self.backbone = self.build_cnn(in_channels, cnn_depth)
+        elif cnn_type == 'resnet18':
+            self.backbone = resnet18(weights=None)
         else:
             raise ValueError(f'CNN Type: {cnn_type} not supported')
 
