@@ -29,6 +29,8 @@ class Parameters:
     dataset_persentages = tuple(asdict(DatasetPercentages()).values())
     batch_size = 10
 
+    random_split_seed = 42
+
 
 @dataclass
 class TrainData:
@@ -51,7 +53,7 @@ class TrainData:
         'Precision': torchmetrics.Precision(task='multiclass', average='macro', num_classes=Parameters.n_classes),
         'F1': torchmetrics.F1Score(task='multiclass', average='macro', num_classes=Parameters.n_classes),
         'Recall': torchmetrics.Recall(task='multiclass', average='macro', num_classes=Parameters.n_classes),
-        # 'IoU': torchmetrics.detection.iou.IntersectionOverUnion(),
+        'IoU': torchmetrics.JaccardIndex(task='multiclass', average='macro', num_classes=Parameters.n_classes)
         # 'Cross-Entropy': None
     })
 

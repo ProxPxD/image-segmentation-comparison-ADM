@@ -76,7 +76,7 @@ for name, model in models.items():
         model,
         writer=writer,
         model_name=name,
-        get_model_path=lambda model_name, epoch, iteration: f'{model_name}_e{epoch}',
+        get_model_path=lambda model_name, epoch, iteration: f'models/{model_name}_e{epoch}',
         verbose=3,
         metrics=train_data.metrics,
         optimizer=train_data.optimizer,
