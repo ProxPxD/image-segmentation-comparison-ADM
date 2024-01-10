@@ -93,7 +93,7 @@ for name, model in models.items():
         validate_every_n_epoch=1,
         device=Parameters.device
     )
-    trainer.load(4, 4)
+    trainer.load(14, 14)
     match mode:
         case Mode.TRAIN:
             trainer.train(train_loader, val_loader)
