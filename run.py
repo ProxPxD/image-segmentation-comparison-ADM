@@ -1,8 +1,11 @@
 import shutil
 import os
 import sys
+from enum import Enum
 import logging
 
+import cv2
+import numpy as np
 
 libraries = (
     'opencv-python',
@@ -68,6 +71,10 @@ models = {
 labels = analysis.load_labels()
 normalize = utils.get_normalize(labels)
 
+Mode = Enum('Mode', ['TRAIN', 'TEST'])
+mode = Mode.TEST
+
+train_loader, val_loader, test_loader = dataset.get_dataloaders(normalize)
 
 for name, model in models.items():
     optimizer = torch.optim.Adam(model.parameters(), lr=TrainData.lr, weight_decay=TrainData.weight_decay)
@@ -86,7 +93,25 @@ for name, model in models.items():
         device=Parameters.device
     )
     trainer.load(4, 4)
-    print('Data Path:', Paths.DATA.resolve())
-    print('pwd:', os.system('pwd'))
-    train_loader, val_loader, test_loader = dataset.get_dataloaders(normalize)
-    trainer.train(train_loader, val_loader, test_loader)
+    match mode:
+        case Mode.TRAIN:
+            trainer.train(train_loader, val_loader)
+        case Mode.TEST:
+            last_index = 0
+            os.mkdir('predictions')
+            for X, results in test_loader:
+                preds = trainer.model(X)
+                curr_index = test_loader.dataset.index
+                indices = range(last_index, curr_index+1)
+                for index, pred in zip(indices, preds):
+                    class_mask = np.argmax(pred, axis=2).astype(np.uint8)
+                    color_mask = np.array(labels.loc[class_mask.flatten()].values.reshape(*class_mask.shape[:-1]))
+                    print(f'Color mask dimensions: {color_mask.shape}')
+
+                    img_path = test_loader.dataset.path_tuples[index][0]
+                    new_mask_name = img_path.replace('.png', '_pred.png').rsplit('/', 1)[-1]
+                    new_mask_path = 'predictions/' + new_mask_name
+                    print(f'Saving in {new_mask_path}')
+                    cv2.imwrite(new_mask_path, color_mask)
+        case _:
+            print(f'Mode "{mode}" is unknown')

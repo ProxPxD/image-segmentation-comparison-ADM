@@ -12,10 +12,14 @@ class CamSeqDS(IterableDataset):
         self.path_tuples = path_tuples
         self.normalize = normalize
         self.image_transposition = (2, 0, 1)
+        self.index = -1
 
     def __iter__(self):
         numpied = utils.path_to_numpy(self.path_tuples, self.normalize)
-        yield from ((img.transpose(self.image_transposition), mask) for img, mask in numpied)
+        adjusteds = ((img.transpose(self.image_transposition), mask) for img, mask in numpied)
+        for img, mask in adjusteds:
+            self.index += 1
+            yield img, mask
 
 
 def get_dataloaders(normalize=lambda args: args):
