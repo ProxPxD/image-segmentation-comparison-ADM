@@ -70,12 +70,15 @@ class PSPNet(nn.Module):
     def forward(self, x):
         # CNN Backbone
         cnn_output = self.backbone(x)
+        print(f'cnn_output: {cnn_output.shape}')
 
         # Pyramid Pooling Module
         ppm_output = self.pyramid_pooling(cnn_output)
+        print(f'ppm_output: {ppm_output.shape}')
 
         # # Final classification layer
         final_output = self.classification(ppm_output)
+        print(f'final_output: {final_output.shape}')
 
         return final_output
 
