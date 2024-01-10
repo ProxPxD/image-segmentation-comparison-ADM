@@ -85,6 +85,7 @@ for name, model in models.items():
         validate_every_n_epoch=1,
         device=Parameters.device
     )
+    trainer.load(4, 4)
     print('Data Path:', Paths.DATA.resolve())
     print('pwd:', os.system('pwd'))
     train_loader, val_loader, test_loader = dataset.get_dataloaders(normalize)

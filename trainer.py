@@ -46,7 +46,6 @@ class Trainer:
 
         self.epoch: Optional[int] = None
         self.iteration: Optional[int] = None
-        self.load()
 
     def _is_in_right_iteration(self):
         return self.iteration % 1 == 0  # to implement if needed a variable iteration
@@ -139,8 +138,7 @@ class Trainer:
 
         self.model.train()
 
-    def load(self):
-        epoch = iteration = 4
+    def load(self, epoch=0, iteration=0):
         path = self.get_model_path(self.model_name, epoch, iteration)
         path = '../input/img-seg-comp/models/' + path
         last_existing = None
