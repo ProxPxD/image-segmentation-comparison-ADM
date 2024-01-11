@@ -26,7 +26,7 @@ class Parameters:
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    dataset_persentages = tuple(asdict(DatasetPercentages()).values())
+    dataset_percentages = tuple(asdict(DatasetPercentages()).values())
     batch_size = 10
 
     random_split_seed = 42
@@ -41,8 +41,7 @@ class TrainData:
     loss: Callable = lambda outputs, labels: F.cross_entropy(outputs.squeeze(), labels.type(torch.LongTensor).to(Parameters.device))
 
     lr: float = .005
-    weight_decay: float =1e-5
-    batch_size: int = 5
+    weight_decay: float = 1e-5
 
     log_dir = 'logs'
     get_model_path: Callable[[str, int, int], str] = lambda model_name, epoch, it: f'{model_name}_{epoch}' + (f'_{it}' if it is not None else '')
@@ -58,7 +57,7 @@ class TrainData:
     })
 
 
-if sum(Parameters.dataset_persentages) != 1.0:
+if sum(Parameters.dataset_percentages) != 1.0:
     raise ValueError
 
 

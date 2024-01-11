@@ -24,7 +24,7 @@ class CamSeqDS(IterableDataset):
 
 def get_dataloaders(normalize=lambda args: args):
     path_tuples = list(utils.read_img_mask_name_pairs(Paths.INPUT_IMGAGES, mask_pattern=r'_L.png$', is_sorted_pairwise=True))
-    dataset_paths = torch.utils.data.random_split(path_tuples, Parameters.dataset_persentages, generator=torch.Generator().manual_seed(Parameters.random_split_seed))
+    dataset_paths = torch.utils.data.random_split(path_tuples, Parameters.dataset_percentages, generator=torch.Generator().manual_seed(Parameters.random_split_seed))
     datasets = map(lambda paths: CamSeqDS(paths, normalize), dataset_paths)
     loaders = tuple(map(lambda ds: DataLoader(ds, batch_size=Parameters.batch_size, drop_last=True), datasets))
     return loaders
