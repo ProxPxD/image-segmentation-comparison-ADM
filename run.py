@@ -55,6 +55,7 @@ import utils
 from parameters import Parameters, TrainData
 from trainer import Trainer
 from unet import UNet
+from pspnet import PSPNet
 from constants import Paths, L
 
 run_analysis = True
@@ -66,7 +67,8 @@ writer = SummaryWriter(TrainData.log_dir)
 
 
 models = {
-    'unet': UNet(Parameters.permutated_image_size[0], Parameters.n_classes, depth=3),
+    #'unet': UNet(Parameters.permutated_image_size[0], Parameters.n_classes, depth=3),
+    'pspnet': PSPNet(Parameters.permutated_image_size[0], Parameters.n_classes),
 }
 
 labels = analysis.load_labels()
@@ -91,9 +93,10 @@ for name, model in models.items():
         optimizer=train_data.optimizer,
         loss=train_data.loss,
         validate_every_n_epoch=1,
+        epochs=25,
         device=Parameters.device
     )
-    trainer.load(14, 14)
+    trainer.load(24, 24)
     match mode:
         case Mode.TRAIN:
             trainer.train(train_loader, val_loader)
