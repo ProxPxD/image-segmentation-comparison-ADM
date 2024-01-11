@@ -1,7 +1,7 @@
 import torch
-from torch import nn
+from torch import nn, wait
 import torch.nn.functional as F
-from torchvision.models import resnet18
+from torchvision.models import resnet18, resnet34, resnet50
 
 
 class PyramidPoolingModule(nn.Module):
@@ -25,9 +25,10 @@ class PyramidPoolingModule(nn.Module):
             raise ValueError(f'Uknown pooling mode: {self.mode}, use max/avg')
 
         conv = nn.Sequential(
-            nn.Conv2d(in_channels, 1, kernel_size=1, bias=False),
+            nn.Conv2d(32, 1, kernel_size=1, bias=False),
             nn.BatchNorm2d(1),
-            nn.PReLU()
+            nn.PReLU(),
+            nn.Upsample(size=(360, 480))
         )
 
         return nn.Sequential(prior, conv)
@@ -43,22 +44,47 @@ class PyramidPoolingModule(nn.Module):
 
 
 class PSPNet(nn.Module):
-    def __init__(self, in_channels, num_classes, cnn_depth=3, pool_sizes=(1,2,3,6), cnn_type='resnet18'):
+    def __init__(self, in_channels, num_classes, cnn_depth=3, pool_sizes=(1,2,3,6), cnn_type='resnet50'):
         super().__init__()
 
-        # Define your CNN backbone (FCN in this case)
         if cnn_type == 'cnn':
             self.backbone = self.build_cnn(in_channels, cnn_depth)
-        elif cnn_type == 'resnet18':
-            self.backbone = resnet18(weights=None)
+        elif cnn_type == 'resnet34':
+            resnet = nn.Sequential(*list(resnet34(weights=None).children())[:-2])
+            last_seq_layer = list(resnet.children())[-1]
+            last_basic_block = list(last_seq_layer.children())[-1]
+            last_conv = list(last_basic_block.children())[-2]
+            self.backbone = nn.Sequential(
+                resnet,
+                nn.Conv2d(last_conv.out_channels, in_channels, kernel_size=3)
+            )
+        elif cnn_type == 'resnet50':
+            resnet = nn.Sequential(*list(resnet50(weights=None).children())[:-2])
+            last_seq_layer = list(resnet.children())[-1]
+            last_bottleneck = list(last_seq_layer.children())[-1]
+            last_conv = list(last_bottleneck.children())[-3]
+            self.backbone = nn.Sequential(
+                resnet,
+                nn.Conv2d(2048, 1024, kernel_size=1),  # Reduce channels
+                nn.ReLU(inplace=True),
+                nn.ConvTranspose2d(1024, 512, kernel_size=3, stride=2, padding=1, output_padding=1),
+                nn.ReLU(inplace=True),
+                nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1),
+                nn.ReLU(inplace=True),
+                nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1),
+                nn.ReLU(inplace=True),
+                nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
+                nn.ReLU(inplace=True),
+                nn.ConvTranspose2d(64, 32, kernel_size=3, stride=2, padding=1, output_padding=1),
+                nn.AdaptiveMaxPool2d(output_size=(360,480))
+            )
         else:
             raise ValueError(f'CNN Type: {cnn_type} not supported')
 
-        # Pyramid Pooling Module
         self.pyramid_pooling = PyramidPoolingModule(in_channels, pool_sizes)
-
-        ## Final classification layer
-        self.classification = nn.Conv2d(in_channels + len(pool_sizes), num_classes, kernel_size=1)
+        self.upsample = nn.Sequential(
+            nn.Conv2d(num_classes + len(pool_sizes), num_classes, kernel_size=1),
+        )
 
     def build_cnn(self, in_channels, depth):
         layers = []
@@ -68,17 +94,8 @@ class PSPNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        # CNN Backbone
         cnn_output = self.backbone(x)
-        print(f'cnn_output: {cnn_output.shape}')
-
-        # Pyramid Pooling Module
         ppm_output = self.pyramid_pooling(cnn_output)
-        print(f'ppm_output: {ppm_output.shape}')
-
-        # # Final classification layer
-        final_output = self.classification(ppm_output)
-        print(f'final_output: {final_output.shape}')
-
+        final_output = self.upsample(ppm_output)
         return final_output
 
