@@ -15,14 +15,17 @@ class PyramidPoolingModule(nn.Module):
         for size in pool_sizes:
             self.pooling_layers.append(self._make_stage(in_channels, size))
 
-        
+    def get_prior(self, size):
+        prior_map = {
+            'avg': nn.AdaptiveAvgPool2d,
+            'max': nn.AdaptiveMaxPool2d
+        }
+        if self.mode not in prior_map:
+            raise ValueError(f'Unknown pooling mode: {self.mode}, use max/avg')
+        return prior_map[self.mode](output_size=(size, size))
+
     def _make_stage(self, in_channels, size):
-        if self.mode == 'avg':
-            prior = nn.AdaptiveAvgPool2d(output_size=(size, size))
-        elif self.mode == 'max':
-            prior = nn.AdaptiveMaxPool2d(output_size=(size, size))
-        else:
-            raise ValueError(f'Uknown pooling mode: {self.mode}, use max/avg')
+        prior = self.get_prior(size)
 
         conv = nn.Sequential(
             nn.Conv2d(32, 1, kernel_size=1, bias=False),
@@ -44,7 +47,7 @@ class PyramidPoolingModule(nn.Module):
 
 
 class PSPNet(nn.Module):
-    def __init__(self, in_channels, num_classes, cnn_depth=3, pool_sizes=(1,2,3,6), cnn_type='resnet50'):
+    def __init__(self, in_channels, num_classes, cnn_depth=3, pool_sizes=(1, 2, 3, 6), cnn_type='resnet50'):
         super().__init__()
 
         if cnn_type == 'cnn':
@@ -75,8 +78,8 @@ class PSPNet(nn.Module):
                 nn.ReLU(inplace=True),
                 nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
                 nn.ReLU(inplace=True),
-                nn.ConvTranspose2d(64, 32, kernel_size=3, stride=2, padding=1, output_padding=1),
-                nn.AdaptiveMaxPool2d(output_size=(360,480))
+                nn.ConvTranspostwoe2d(64, 32, kernel_size=3, stride=2, padding=1, output_padding=1),
+                nn.AdaptiveMaxPool2d(output_size=(360, 480))
             )
         else:
             raise ValueError(f'CNN Type: {cnn_type} not supported')
