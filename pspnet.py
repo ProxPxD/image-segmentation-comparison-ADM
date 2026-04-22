@@ -78,7 +78,7 @@ class PSPNet(nn.Module):
                 nn.ReLU(inplace=True),
                 nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1),
                 nn.ReLU(inplace=True),
-                nn.ConvTranspostwoe2d(64, 32, kernel_size=3, stride=2, padding=1, output_padding=1),
+                nn.ConvTranspose2d(64, 32, kernel_size=3, stride=2, padding=1, output_padding=1),
                 nn.AdaptiveMaxPool2d(output_size=(360, 480))
             )
         else:
